@@ -12,7 +12,7 @@ module dynSubgridDriverMod
   use decompMod                    , only : bounds_type, BOUNDS_LEVEL_PROC, BOUNDS_LEVEL_CLUMP
   use decompMod                    , only : get_proc_clumps, get_clump_bounds
   use dynSubgridControlMod         , only : get_flanduse_timeseries
-  use dynSubgridControlMod         , only : get_do_transient_pfts, get_do_transient_crops
+  use dynSubgridControlMod         , only : get_do_transient_pfts, get_do_transient_crops, get_do_transient_urban
   use dynSubgridControlMod         , only : get_do_harvest
   use dynPriorWeightsMod           , only : prior_weights_type
   use dynPatchStateUpdaterMod      , only : patch_state_updater_type
@@ -21,6 +21,7 @@ module dynSubgridDriverMod
   use dyncropFileMod               , only : dyncrop_init, dyncrop_interp
   use dynHarvestMod                , only : dynHarvest_init, dynHarvest_interp
   use dynLandunitAreaMod           , only : update_landunit_weights
+  use dynurbanFileMod              , only : dynurban_init, dynurban_interp
   use subgridWeightsMod            , only : compute_higher_order_weights, set_subgrid_diagnostic_fields
   use reweightMod                  , only : reweight_wrapup
   use glcBehaviorMod               , only : glc_behavior_type
@@ -112,6 +113,11 @@ contains
        call dyncrop_init(bounds_proc, dyncrop_filename=get_flanduse_timeseries())
     end if
 
+    ! Initialize stuff for prescribed transient urban
+    if (get_do_transient_urban()) then
+        call dynurban_init(bounds_proc, dynurban_filename=get_flanduse_timeseries())
+    end if
+    
     ! Initialize stuff for harvest. Note that, currently, the harvest data are on the
     ! flanduse_timeseries file. However, this could theoretically be changed so that the
     ! harvest data were separated from the pftdyn data, allowing them to differ in the
@@ -133,6 +139,10 @@ contains
        call dyncrop_interp(bounds_proc, crop_inst)
     end if
 
+    if (get_do_transient_urban()) then
+       call dynurban_interp(bounds_proc)
+    end if
+    
     ! (We don't bother calling dynHarvest_interp, because the harvest information isn't
     ! needed until the run loop. Harvest has nothing to do with subgrid weights, and in
     ! some respects doesn't even really belong in this module at all.)
@@ -245,6 +255,10 @@ contains
        call dynHarvest_interp(bounds_proc)
     end if
 
+    if (get_do_transient_urban()) then
+       call dynurban_interp(bounds_proc)
+    end if
+    
     ! ==========================================================================
     ! Do land cover change that does not require I/O
     ! ==========================================================================
