@@ -144,7 +144,7 @@ contains
     max_patch_per_col= max(maxsoil_patches, actual_numcft, maxpatch_urb)
 
     nlevsoifl   =  10
-    nlevurb     =  5
+    nlevurb     =  10
 
     if ( masterproc ) write(iulog, *) 'soil_layerstruct_predefined varpar ', soil_layerstruct_predefined
     if ( masterproc ) write(iulog, *) 'soil_layerstruct_userdefined varpar ', soil_layerstruct_userdefined

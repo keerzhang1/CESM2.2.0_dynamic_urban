@@ -579,7 +579,7 @@ contains
       ! !USES:
       use dynSubgridControlMod , only : get_do_transient_urban
       use clm_instur           , only : pct_urban_max
-      use clm_varcon           , only : isturb_MIN
+      use landunit_varcon           , only : isturb_MIN
       !
       ! !ARGUMENTS:
       logical :: exists  ! function result
