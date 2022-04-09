@@ -4226,9 +4226,6 @@ contains
     do j = 1, nlevsoi
        do fc = 1, num_nolakec
           c = filter_nolakec(fc)
-          totcolch4(c) = totcolch4(c) + &
-               (finundated(c)*conc_ch4_sat(c,j) + (1._r8-finundated(c))*conc_ch4_unsat(c,j)) * &
-               dz(c,j)*catomw
           l = col%landunit(c)
           ! Rather than trying to keep the BGC variables physically meaningful in urban landunits, 
           ! we will just pack these variables in a way that should conserve these variables, even if
