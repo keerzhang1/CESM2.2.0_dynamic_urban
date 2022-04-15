@@ -155,6 +155,7 @@ contains
 
          tc_ref2m               => humanindex_inst%tc_ref2m_patch               , & ! Output: [real(r8) (:)   ]  2 m height surface air temperature (C)
          vap_ref2m              => humanindex_inst%vap_ref2m_patch              , & ! Output: [real(r8) (:)   ]  2 m height vapor pressure (Pa)
+         vap_ref2m_r            => humanindex_inst%vap_ref2m_r_patch            , & ! Output: [real(r8) (:)   ]  Rural 2 m height vapor pressure (Pa)
          appar_temp_ref2m       => humanindex_inst%appar_temp_ref2m_patch       , & ! Output: [real(r8) (:)   ]  2 m apparent temperature (C)
          appar_temp_ref2m_r     => humanindex_inst%appar_temp_ref2m_r_patch     , & ! Output: [real(r8) (:)   ]  Rural 2 m apparent temperature (C)
          swbgt_ref2m            => humanindex_inst%swbgt_ref2m_patch            , & ! Output: [real(r8) (:)   ]  2 m Simplified Wetbulb Globe temperature (C)
@@ -231,7 +232,8 @@ contains
          t_ref2m_r              => temperature_inst%t_ref2m_r_patch             , & ! Output: [real(r8) (:)   ]  Rural 2 m height surface air temperature (Kelvin)                     
          t_veg                  => temperature_inst%t_veg_patch                 , & ! Output: [real(r8) (:)   ]  vegetation temperature (Kelvin)                                       
 
-         q_ref2m                => waterdiagnosticbulk_inst%q_ref2m_patch                , & ! Output: [real(r8) (:)   ]  2 m height surface specific humidity (kg/kg)                          
+         q_ref2m                => waterdiagnosticbulk_inst%q_ref2m_patch                , & ! Output: [real(r8) (:)   ]  2 m height surface specific humidity (kg/kg) 
+         q_ref2m_r              => waterdiagnosticbulk_inst%q_ref2m_r_patch              , & ! Output: [real(r8) (:)   ]  Rural 2 m height surface specific humidity (kg/kg)                     
          rh_ref2m_r             => waterdiagnosticbulk_inst%rh_ref2m_r_patch             , & ! Output: [real(r8) (:)   ]  Rural 2 m height surface relative humidity (%)                        
          rh_ref2m               => waterdiagnosticbulk_inst%rh_ref2m_patch               , & ! Output: [real(r8) (:)   ]  2 m height surface relative humidity (%)                              
 
@@ -426,6 +428,7 @@ contains
          if (lun%itype(l) == istsoil .or. lun%itype(l) == istcrop) then
             rh_ref2m_r(p) = rh_ref2m(p)
             t_ref2m_r(p) = t_ref2m(p)
+            q_ref2m_r(p)=q_ref2m(p)
          end if
 
          ! Human Heat Stress
@@ -448,6 +451,7 @@ contains
   
             if (lun%itype(l) == istsoil .or. lun%itype(l) == istcrop) then
               wbt_ref2m_r(p)            = wbt_ref2m(p)
+              vap_ref2m_r(p)            = vap_ref2m(p)
               nws_hi_ref2m_r(p)         = nws_hi_ref2m(p)
               appar_temp_ref2m_r(p)     = appar_temp_ref2m(p)
               swbgt_ref2m_r(p)          = swbgt_ref2m(p)

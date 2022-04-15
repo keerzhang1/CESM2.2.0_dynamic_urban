@@ -44,6 +44,8 @@ module WaterDiagnosticType
      real(r8), pointer :: h2osoi_liqice_10cm_col (:)   ! col liquid water + ice lens in top 10cm of soil (kg/m2)
      real(r8), pointer :: tws_grc                (:)   ! grc total water storage (mm H2O)
      real(r8), pointer :: q_ref2m_patch          (:)   ! patch 2 m height surface specific humidity (kg/kg)
+     real(r8), pointer :: q_ref2m_r_patch        (:)   ! patch 2 m height surface specific humidity - rural (kg/kg)
+     real(r8), pointer :: q_ref2m_u_patch        (:)   ! patch 2 m height surface specific humidity - urban (kg/kg)     
      real(r8), pointer :: qg_snow_col            (:)   ! col ground specific humidity [kg/kg]
      real(r8), pointer :: qg_soil_col            (:)   ! col ground specific humidity [kg/kg]
      real(r8), pointer :: qg_h2osfc_col          (:)   ! col ground specific humidity [kg/kg]
@@ -138,7 +140,12 @@ contains
     call AllocateVar1d(var = this%q_ref2m_patch, name = 'q_ref2m_patch', &
          container = tracer_vars, &
          bounds = bounds, subgrid_level = BOUNDS_SUBGRID_PATCH)
-
+    call AllocateVar1d(var = this%q_ref2m_u_patch, name = 'q_ref2m_u_patch', &
+         container = tracer_vars, &
+         bounds = bounds, subgrid_level = BOUNDS_SUBGRID_PATCH)
+    call AllocateVar1d(var = this%q_ref2m_r_patch, name = 'q_ref2m_r_patch', &
+         container = tracer_vars, &
+         bounds = bounds, subgrid_level = BOUNDS_SUBGRID_PATCH)         
   end subroutine InitAllocate
 
   !------------------------------------------------------------------------
@@ -205,6 +212,22 @@ contains
          long_name=this%info%lname('2m specific humidity'), &
          ptr_patch=this%q_ref2m_patch)
 
+    this%q_ref2m_r_patch(begp:endp) = spval
+    call hist_addfld1d ( &
+         fname=this%info%fname('Q2M_R'), &
+         units='kg/kg',  &
+         avgflag='A', &
+         long_name=this%info%lname('Rural 2m specific humidity'), &
+         ptr_patch=this%q_ref2m_r_patch)
+
+    this%q_ref2m_u_patch(begp:endp) = spval
+    call hist_addfld1d ( &
+         fname=this%info%fname('Q2M_U'), &
+         units='kg/kg',  &
+         avgflag='A', &
+         long_name=this%info%lname('Urban 2m specific humidity'), &
+         ptr_patch=this%q_ref2m_u_patch)
+              
 
 
     ! Snow properties - these will be vertically averaged over the snow profile

@@ -248,7 +248,8 @@ contains
          t_ref2m             =>   temperature_inst%t_ref2m_patch            , & ! Output: [real(r8) (:)   ]  2 m height surface air temperature (K)            
          t_ref2m_u           =>   temperature_inst%t_ref2m_u_patch          , & ! Output: [real(r8) (:)   ]  Urban 2 m height surface air temperature (K)     
          t_veg               =>   temperature_inst%t_veg_patch              , & ! Output: [real(r8) (:)   ]  vegetation temperature (K)                        
-         taf                 =>   temperature_inst%taf_lun                  , & ! Output: [real(r8) (:)   ]  urban canopy air temperature (K)                  
+         taf                 =>   temperature_inst%taf_lun                  , & ! Output: [real(r8) (:)   ]  urban canopy air temperature (K)     
+         vap_ref2m_u         => humanindex_inst%vap_ref2m_u_patch           , & ! Output: [real(r8) (:)   ]  Urban 2 m height vapor pressure (Pa)             
 
 
          tc_ref2m            => humanindex_inst%tc_ref2m_patch              , & ! Output: [real(r8) (:)   ]  2 m height surface air temperature (C)
@@ -289,7 +290,8 @@ contains
          h2osoi_ice          =>   waterstatebulk_inst%h2osoi_ice_col            , & ! Input:  [real(r8) (:,:) ]  ice lens (kg/m2)                                
          h2osoi_liq          =>   waterstatebulk_inst%h2osoi_liq_col            , & ! Input:  [real(r8) (:,:) ]  liquid water (kg/m2)                            
          qaf                 =>   waterdiagnosticbulk_inst%qaf_lun                   , & ! Output: [real(r8) (:)   ]  urban canopy air specific humidity (kg/kg)        
-         q_ref2m             =>   waterdiagnosticbulk_inst%q_ref2m_patch             , & ! Output: [real(r8) (:)   ]  2 m height surface specific humidity (kg/kg)      
+         q_ref2m             =>   waterdiagnosticbulk_inst%q_ref2m_patch             , & ! Output: [real(r8) (:)   ]  2 m height surface specific humidity (kg/kg)  
+         q_ref2m_u           =>   waterdiagnosticbulk_inst%q_ref2m_u_patch             , & ! Output: [real(r8) (:)   ]  Urban 2 m height surface specific humidity (kg/kg)  
          rh_ref2m            =>   waterdiagnosticbulk_inst%rh_ref2m_patch            , & ! Output: [real(r8) (:)   ]  2 m height surface relative humidity (%)          
          rh_ref2m_u          =>   waterdiagnosticbulk_inst%rh_ref2m_u_patch          , & ! Output: [real(r8) (:)   ]  2 m height surface relative humidity (%)          
 
@@ -890,6 +892,8 @@ contains
          call QSat(t_ref2m(p), forc_pbot(g), e_ref2m, de2mdT, qsat_ref2m, dqsat2mdT)
          rh_ref2m(p) = min(100._r8, q_ref2m(p) / qsat_ref2m * 100._r8)
          rh_ref2m_u(p) = rh_ref2m(p)
+         
+         q_ref2m_u(p) = q_ref2m(p)
 
          ! Human Heat Stress
          if ( all_human_stress_indices .or. fast_human_stress_indices )then
@@ -908,7 +912,8 @@ contains
                call THIndex(tc_ref2m(p), wb_ref2m(p), thic_ref2m(p), thip_ref2m(p))
                call SwampCoolEff(tc_ref2m(p), wb_ref2m(p), swmp80_ref2m(p), swmp65_ref2m(p))
             end if
-  
+            
+            vap_ref2m_u(p)            = vap_ref2m(p)
             wbt_ref2m_u(p)            = wbt_ref2m(p)
             nws_hi_ref2m_u(p)         = nws_hi_ref2m(p)
             appar_temp_ref2m_u(p)     = appar_temp_ref2m(p)
